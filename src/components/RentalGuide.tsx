@@ -6,7 +6,7 @@
 import React, { useState, useRef } from 'react';
 import { HelpCircle, Landmark, ShieldCheck, Mail, Send, Award, Compass, RefreshCw, Layout, Smartphone, Phone, CheckCircle2, Upload, Check, RotateCcw, Loader2 } from 'lucide-react';
 import { GalleryConfig, RentalInquiry } from '../types.ts';
-import defaultFloorPlanImg from '../assets/images/lim303_floor_plan_1788158721862.jpg';
+import defaultFloorPlanImg from '../assets/images/gallery_floorplan_blueprint_1788248676374.jpg';
 
 interface RentalGuideProps {
   config: GalleryConfig;

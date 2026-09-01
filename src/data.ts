@@ -4,21 +4,24 @@
  */
 
 import { GalleryConfig, ExhibitionPost, RentalInquiry } from './types.ts';
-import galleryWhiteHallImg from './assets/images/gallery_white_hall_1788153730031.jpg';
-import defaultFloorPlanImg from './assets/images/lim303_floor_plan_1788158721862.jpg';
+import galleryMainHallImg from './assets/images/gallery_main_hall_1788248591245.jpg';
+import gallerySideViewImg from './assets/images/gallery_side_view_1788248608964.jpg';
+import galleryWallPerspectiveImg from './assets/images/gallery_wall_perspective_1788248659744.jpg';
+import galleryReceptionImg from './assets/images/gallery_reception_1788248626793.jpg';
+import galleryFloorPlanBlueprintImg from './assets/images/gallery_floorplan_blueprint_1788248676374.jpg';
 
 export const INITIAL_CONFIG: GalleryConfig = {
   siteName: 'LIM303 GALLERY',
   siteSubName: 'PROJECT & EXHIBITION SPACE',
   siteDescription: '빛과 공간, 그리고 예술이 스며드는 프리미엄 대관 미술관',
   aboutText: 'LIM303 GALLERY는 독창적인 시각을 지닌 현대 미술가과 대중을 연결하는 세련되고 감각적인 복합 예술 공간입니다. 백색의 미니멀한 공간 구성과 정교한 조명 시스템을 통해, 작품 본연의 온전한 호흡을 지탱합니다. 참신한 기획 전시부터 수준 높은 개인전, 브랜드 팝업 및 창의적 대관까지 예술이 살아 숨 쉬는 최상의 환경을 제공합니다.',
-  aboutImage: galleryWhiteHallImg, // High-ceiling white gallery space with spot track lights
-  aboutImage2: 'https://images.unsplash.com/photo-1582555762489-7f3972236838?q=80&w=1000', // Architectural details
+  aboutImage: galleryMainHallImg,
+  aboutImage2: gallerySideViewImg,
   aboutImages: [
-    galleryWhiteHallImg,
-    'https://images.unsplash.com/photo-1582555762489-7f3972236838?q=80&w=1000',
-    'https://images.unsplash.com/photo-1518998053901-5348d3961a04?q=80&w=1200',
-    'https://images.unsplash.com/photo-1544967082-d9d25d867d66?q=80&w=1200',
+    galleryMainHallImg,
+    gallerySideViewImg,
+    galleryWallPerspectiveImg,
+    galleryReceptionImg,
   ],
   
   // Contact details
@@ -49,9 +52,10 @@ export const INITIAL_CONFIG: GalleryConfig = {
   rentalCapacity: '최대 60명 동시 수용 가능',
   rentalHeight: '2.6m ~ 4.0m',
   rentalEquipment: '전문가용 레일 조명, 음향 스피커, 와이파이, 빔프로젝터, 전시대 및 이동식 화이트 가벽',
-  floorPlanImage: defaultFloorPlanImg,
+  floorPlanImage: galleryFloorPlanBlueprintImg,
   showHeroCurrentExhibition: false, // Hidden by default, can be toggled on anytime
   formspreeEndpoint: 'https://formspree.io/f/mljegbyn',
+  adminPassword: '0821',
 };
 
 export const INITIAL_EXHIBITIONS: ExhibitionPost[] = [

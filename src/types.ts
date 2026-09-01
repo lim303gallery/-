@@ -43,6 +43,7 @@ export interface GalleryConfig {
   floorPlanImage?: string; // Custom uploaded blueprint/floor plan image
   showHeroCurrentExhibition?: boolean; // Toggle display of 'CURRENT EXHIBITION' preview card on hero
   formspreeEndpoint?: string; // Formspree endpoint URL for collecting inquiries
+  adminPassword?: string; // Master admin password
 }
 
 export interface ExhibitionPost {

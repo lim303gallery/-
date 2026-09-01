@@ -6,6 +6,7 @@
 import React, { useRef, useState } from 'react';
 import { MapPin, Clock, CalendarIcon, Mail, Phone, Upload, Check, ChevronLeft, ChevronRight, Plus, Trash2, Image as ImageIcon, ExternalLink, Navigation } from 'lucide-react';
 import { GalleryConfig } from '../types.ts';
+import galleryMainHallImg from '../assets/images/gallery_main_hall_1788248591245.jpg';
 
 interface AboutProps {
   config: GalleryConfig;
@@ -24,7 +25,7 @@ export default function About({ config, onUpdateConfig, isAdmin = false }: About
   const rawImages = config.aboutImages && config.aboutImages.length > 0 
     ? config.aboutImages 
     : [config.aboutImage, config.aboutImage2].filter(Boolean);
-  const images = rawImages.length > 0 ? rawImages : ['https://images.unsplash.com/photo-1518998053901-5348d3961a04?q=80&w=1200'];
+  const images = rawImages.length > 0 ? rawImages : [galleryMainHallImg];
 
   const currentIdx = Math.min(activeImageIndex, images.length - 1);
 
