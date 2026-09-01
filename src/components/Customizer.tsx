@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef } from 'react';
-import { Sliders, Settings, Plus, Edit, Trash2, X, Check, Globe, Share2, Clipboard, Landmark, Eye, Upload, Image as ImageIcon } from 'lucide-react';
+import { Sliders, Settings, Plus, Edit, Trash2, X, Check, Globe, Share2, Clipboard, Landmark, Eye, Upload, Image as ImageIcon, Download, RotateCcw, FileCode, CheckCircle2 } from 'lucide-react';
 import { GalleryConfig, ExhibitionPost, RentalInquiry } from '../types.ts';
 import { INITIAL_CONFIG } from '../data.ts';
 import InquiryList from './InquiryList.tsx';
@@ -131,6 +131,55 @@ export default function Customizer({
       img.src = result;
     };
     reader.readAsDataURL(file);
+  };
+
+  // Full Configuration Backup & Restore (JSON)
+  const backupFileInputRef = useRef<HTMLInputElement>(null);
+  const [backupSuccessMsg, setBackupSuccessMsg] = useState('');
+
+  const handleExportBackup = () => {
+    const backupData = {
+      version: '2.0',
+      exportedAt: new Date().toISOString(),
+      config,
+      posts,
+    };
+    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `LIM303_GALLERY_DATA_BACKUP_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setBackupSuccessMsg('백업 JSON 파일이 내 컴퓨터에 다운로드되었습니다.');
+    setTimeout(() => setBackupSuccessMsg(''), 4000);
+  };
+
+  const handleImportBackup = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const raw = event.target?.result as string;
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          if (parsed.config) {
+            onConfigChange({ ...INITIAL_CONFIG, ...parsed.config });
+          }
+          if (Array.isArray(parsed.posts)) {
+            parsed.posts.forEach((p: ExhibitionPost) => {
+              onUpdatePost(p);
+            });
+          }
+          setBackupSuccessMsg('백업 데이터(사진, 글, 설정)가 성공적으로 복원되었습니다!');
+          setTimeout(() => setBackupSuccessMsg(''), 5000);
+        }
+      } catch (err) {
+        alert('올바른 백업 JSON 형식이 아닙니다.');
+      }
+    };
+    reader.readAsText(file);
   };
 
   // Post Submission Actions
@@ -539,6 +588,60 @@ export default function Customizer({
                     <p className="text-[10px] text-emerald-700 leading-relaxed font-light">
                       방문자가 '대관 견적 및 문의 폼'을 통해 제출한 모든 데이터가 지정된 Formspree 주소로 실시간 전송되어 안전하게 수집·보관됩니다.
                     </p>
+                  </div>
+
+                  {/* Complete Backup & Restore (JSON) */}
+                  <div className="bg-zinc-900 text-white rounded-xl p-4 space-y-3 shadow-md border border-zinc-800">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <FileCode size={14} className="text-zinc-300" />
+                        <span className="text-[11px] font-bold text-white uppercase tracking-wider">
+                          데이터 전체 백업 및 복원 (JSON)
+                        </span>
+                      </div>
+                      <span className="text-[9px] font-mono px-2 py-0.5 bg-zinc-800 text-zinc-300 rounded">
+                        OFFLINE / CLOUD SYNC
+                      </span>
+                    </div>
+
+                    <p className="text-[10px] text-zinc-300 leading-relaxed font-light">
+                      내가 올린 <strong>도면, 내부 사진, 전시글, 모든 설정값</strong>을 JSON 파일로 내 컴퓨터에 백업 다운로드하거나, 다른 기기/배포 사이트에서 원클릭으로 그대로 불러올 수 있습니다.
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={handleExportBackup}
+                        className="py-2.5 px-3 bg-white hover:bg-zinc-100 text-zinc-900 rounded-lg text-xs font-bold flex items-center justify-center space-x-1.5 transition-all cursor-pointer shadow-xs"
+                      >
+                        <Download size={13} />
+                        <span>전체 백업 다운로드</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => backupFileInputRef.current?.click()}
+                        className="py-2.5 px-3 bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 rounded-lg text-xs font-bold flex items-center justify-center space-x-1.5 transition-all cursor-pointer shadow-xs"
+                      >
+                        <Upload size={13} />
+                        <span>백업 파일 복원하기</span>
+                      </button>
+
+                      <input
+                        ref={backupFileInputRef}
+                        type="file"
+                        accept=".json,application/json"
+                        onChange={handleImportBackup}
+                        className="hidden"
+                      />
+                    </div>
+
+                    {backupSuccessMsg && (
+                      <div className="p-2.5 bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-[11px] rounded-lg flex items-center space-x-2 animate-fade-in">
+                        <CheckCircle2 size={14} className="shrink-0 text-emerald-400" />
+                        <span>{backupSuccessMsg}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

@@ -22,7 +22,7 @@ export const INITIAL_CONFIG: GalleryConfig = {
   ],
   
   // Contact details
-  address: '서울특별시 종로구 삼청로 62-9 (소격동)',
+  address: '서울특별시 강남구 압구정로32길 32 4층',
   phone: '010-8020-5499',
   email: 'lim303gallery@gmail.com',
   hoursWeekday: '오전 10:30 - 오후 6:30',

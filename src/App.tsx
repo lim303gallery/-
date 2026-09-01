@@ -23,67 +23,76 @@ const INQUIRIES_STORAGE_KEY = 'lim303_gallery_inquiries_v2';
 
 export default function App() {
   const [config, setConfig] = useState<GalleryConfig>(() => {
-    // Clear old legacy prototype keys from prior sessions
-    try {
-      localStorage.removeItem('g629_config');
-      localStorage.removeItem('g629_posts');
-      localStorage.removeItem('g629_inquiries');
-    } catch {
-      // ignore
+    // Try to load from current storage key or fallback legacy keys without losing user-uploaded photos
+    let savedData: Partial<GalleryConfig> | null = null;
+    const keysToCheck = [CONFIG_STORAGE_KEY, 'lim303_gallery_config', 'g629_config'];
+    
+    for (const key of keysToCheck) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            savedData = parsed;
+            break;
+          }
+        }
+      } catch {
+        // continue
+      }
     }
 
-    const saved = localStorage.getItem(CONFIG_STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        // Guarantee all updated default fields are properly merged
-        return {
-          ...INITIAL_CONFIG,
-          ...parsed,
-          siteName: 'LIM303 GALLERY',
-          address: parsed.address || INITIAL_CONFIG.address,
-          phone: parsed.phone || INITIAL_CONFIG.phone,
-          email: parsed.email || INITIAL_CONFIG.email,
-          aboutImages: (parsed.aboutImages && parsed.aboutImages.length > 0) ? parsed.aboutImages : INITIAL_CONFIG.aboutImages,
-          aboutImage: parsed.aboutImage || INITIAL_CONFIG.aboutImage,
-          rentalArea: parsed.rentalArea || INITIAL_CONFIG.rentalArea,
-          rentalCapacity: parsed.rentalCapacity || INITIAL_CONFIG.rentalCapacity,
-          rentalHeight: parsed.rentalHeight || INITIAL_CONFIG.rentalHeight,
-          rentalEquipment: parsed.rentalEquipment || INITIAL_CONFIG.rentalEquipment,
-          floorPlanImage: parsed.floorPlanImage || INITIAL_CONFIG.floorPlanImage,
-          showHeroCurrentExhibition: parsed.showHeroCurrentExhibition ?? INITIAL_CONFIG.showHeroCurrentExhibition,
-          formspreeEndpoint: parsed.formspreeEndpoint || INITIAL_CONFIG.formspreeEndpoint,
-        };
-      } catch (e) {
-        console.error('Failed to parse saved config, using initial default.');
-      }
+    if (savedData) {
+      return {
+        ...INITIAL_CONFIG,
+        ...savedData,
+        siteName: 'LIM303 GALLERY',
+        address: savedData.address && savedData.address.includes('압구정로') ? savedData.address : '서울특별시 강남구 압구정로32길 32 4층',
+        phone: savedData.phone || INITIAL_CONFIG.phone,
+        email: savedData.email || INITIAL_CONFIG.email,
+        aboutImages: (savedData.aboutImages && savedData.aboutImages.length > 0) ? savedData.aboutImages : INITIAL_CONFIG.aboutImages,
+        aboutImage: savedData.aboutImage || INITIAL_CONFIG.aboutImage,
+        rentalArea: savedData.rentalArea || INITIAL_CONFIG.rentalArea,
+        rentalCapacity: savedData.rentalCapacity || INITIAL_CONFIG.rentalCapacity,
+        rentalHeight: savedData.rentalHeight || INITIAL_CONFIG.rentalHeight,
+        rentalEquipment: savedData.rentalEquipment || INITIAL_CONFIG.rentalEquipment,
+        floorPlanImage: savedData.floorPlanImage || INITIAL_CONFIG.floorPlanImage,
+        showHeroCurrentExhibition: savedData.showHeroCurrentExhibition ?? INITIAL_CONFIG.showHeroCurrentExhibition,
+        formspreeEndpoint: savedData.formspreeEndpoint || INITIAL_CONFIG.formspreeEndpoint,
+      };
     }
     return INITIAL_CONFIG;
   });
 
   const [posts, setPosts] = useState<ExhibitionPost[]>(() => {
-    const saved = localStorage.getItem(POSTS_STORAGE_KEY);
-    if (saved) {
+    const keysToCheck = [POSTS_STORAGE_KEY, 'lim303_gallery_posts', 'g629_posts'];
+    for (const key of keysToCheck) {
       try {
-        const parsed: ExhibitionPost[] = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
         }
-      } catch (e) {
-        console.error('Failed to parse saved posts, using initial default.');
+      } catch {
+        // continue
       }
     }
     return INITIAL_EXHIBITIONS;
   });
 
   const [inquiries, setInquiries] = useState<RentalInquiry[]>(() => {
-    const saved = localStorage.getItem(INQUIRIES_STORAGE_KEY);
-    if (saved) {
+    const keysToCheck = [INQUIRIES_STORAGE_KEY, 'lim303_gallery_inquiries', 'g629_inquiries'];
+    for (const key of keysToCheck) {
       try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
-      } catch (e) {
-        console.error('Failed to parse saved inquiries, using initial default.');
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch {
+        // continue
       }
     }
     return INITIAL_INQUIRIES;
