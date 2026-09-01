@@ -1,0 +1,289 @@
+import xml.etree.ElementTree as ET
+
+# We will create an ultra-crisp, exact architectural CAD SVG of LIM303 Gallery
+svg_content = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1100" width="100%" height="100%" style="background:#ffffff; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Arrow marker for dimension lines -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 2 L 10 5 L 0 8 z" fill="#18181b"/>
+    </marker>
+    <!-- 220v Socket symbol -->
+    <g id="socket220">
+      <circle cx="0" cy="0" r="11" fill="#ffffff" stroke="#18181b" stroke-width="2.5"/>
+      <path d="M -11 0 L 11 0" stroke="#18181b" stroke-width="2.5"/>
+      <path d="M -5 6 L 5 6" stroke="#18181b" stroke-width="1.5"/>
+      <text x="13" y="10" font-size="10" font-weight="bold" fill="#18181b" font-family="monospace">220v</text>
+    </g>
+    <!-- Door swing arc template -->
+    <g id="doorSwing">
+      <path d="M 0 0 L 38 0 A 38 38 0 0 0 0 38 Z" fill="#f4f4f5" stroke="#71717a" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="0" y1="0" x2="38" y2="0" stroke="#18181b" stroke-width="2.5"/>
+    </g>
+  </defs>
+
+  <!-- Title / Header (Minimalist CAD Style) -->
+  <g transform="translate(50, 40)">
+    <text x="0" y="0" font-size="14" font-weight="900" letter-spacing="0.1em" fill="#18181b">LIM303 GALLERY</text>
+    <text x="145" y="0" font-size="11" font-weight="600" fill="#71717a">| 4F FLOOR PLAN (116m² / 35평)</text>
+  </g>
+
+  <!-- TOP DIMENSION: 12.39 m -->
+  <g transform="translate(140, 70)">
+    <line x1="0" y1="0" x2="710" y2="0" stroke="#18181b" stroke-width="1.2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <line x1="0" y1="-8" x2="0" y2="35" stroke="#a1a1aa" stroke-width="0.8"/>
+    <line x1="710" y1="-8" x2="710" y2="35" stroke="#a1a1aa" stroke-width="0.8"/>
+    <rect x="310" y="-12" width="90" height="22" fill="#ffffff"/>
+    <text x="355" y="4" font-size="13" font-weight="bold" text-anchor="middle" fill="#18181b">12.39 m</text>
+  </g>
+
+  <!-- LEFT DIMENSION: 11.68 m -->
+  <g transform="translate(70, 110)">
+    <line x1="0" y1="0" x2="0" y2="760" stroke="#18181b" stroke-width="1.2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <line x1="-8" y1="0" x2="65" y2="0" stroke="#a1a1aa" stroke-width="0.8"/>
+    <line x1="-8" y1="760" x2="195" y2="760" stroke="#a1a1aa" stroke-width="0.8"/>
+    <rect x="-12" y="360" width="24" height="60" fill="#ffffff" transform="rotate(-90 0 390)"/>
+    <text x="0" y="385" font-size="13" font-weight="bold" text-anchor="middle" fill="#18181b" transform="rotate(-90 0 385)">11.68 m</text>
+  </g>
+
+  <!-- RIGHT TOTAL DIMENSION: 11.98 m -->
+  <g transform="translate(950, 110)">
+    <line x1="0" y1="0" x2="0" y2="760" stroke="#18181b" stroke-width="1.2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <line x1="-95" y1="0" x2="8" y2="0" stroke="#a1a1aa" stroke-width="0.8"/>
+    <line x1="-95" y1="760" x2="8" y2="760" stroke="#a1a1aa" stroke-width="0.8"/>
+    <rect x="-12" y="360" width="24" height="60" fill="#ffffff" transform="rotate(90 0 390)"/>
+    <text x="0" y="385" font-size="13" font-weight="bold" text-anchor="middle" fill="#18181b" transform="rotate(90 0 385)">11.98 m</text>
+  </g>
+
+  <!-- RIGHT SUB DIMENSIONS: 3.60m, 1.54m, 1.00m -->
+  <g transform="translate(920, 110)">
+    <!-- 3.60 m -->
+    <line x1="0" y1="0" x2="0" y2="240" stroke="#18181b" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <line x1="-65" y1="240" x2="8" y2="240" stroke="#a1a1aa" stroke-width="0.8"/>
+    <rect x="-10" y="100" width="20" height="50" fill="#ffffff" transform="rotate(90 0 125)"/>
+    <text x="0" y="125" font-size="11" font-weight="600" text-anchor="middle" fill="#18181b" transform="rotate(90 0 125)">3.60 m</text>
+
+    <!-- 1.54 m -->
+    <line x1="0" y1="430" x2="0" y2="535" stroke="#18181b" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <line x1="-240" y1="430" x2="8" y2="430" stroke="#a1a1aa" stroke-width="0.8"/>
+    <line x1="-265" y1="535" x2="8" y2="535" stroke="#a1a1aa" stroke-width="0.8"/>
+    <rect x="-10" y="465" width="20" height="40" fill="#ffffff" transform="rotate(90 0 485)"/>
+    <text x="0" y="485" font-size="11" font-weight="600" text-anchor="middle" fill="#18181b" transform="rotate(90 0 485)">1.54 m</text>
+
+    <!-- 1.00 m -->
+    <line x1="0" y1="535" x2="0" y2="600" stroke="#18181b" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <line x1="-265" y1="600" x2="8" y2="600" stroke="#a1a1aa" stroke-width="0.8"/>
+    <rect x="-10" y="555" width="20" height="35" fill="#ffffff" transform="rotate(90 0 570)"/>
+    <text x="0" y="570" font-size="10" font-weight="600" text-anchor="middle" fill="#18181b" transform="rotate(90 0 570)">1.00 m</text>
+  </g>
+
+  <!-- INNER RIGHT STEP DIMENSION: 3.00 m -->
+  <g transform="translate(680, 350)">
+    <line x1="0" y1="0" x2="0" y2="185" stroke="#18181b" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <line x1="-5" y1="0" x2="15" y2="0" stroke="#a1a1aa" stroke-width="0.8"/>
+    <line x1="-5" y1="185" x2="15" y2="185" stroke="#a1a1aa" stroke-width="0.8"/>
+    <rect x="-10" y="75" width="20" height="40" fill="#ffffff" transform="rotate(90 0 95)"/>
+    <text x="0" y="95" font-size="11" font-weight="bold" text-anchor="middle" fill="#18181b" transform="rotate(90 0 95)">3.00 m</text>
+  </g>
+
+  <!-- BOTTOM TOTAL DIMENSION: 12.69 m -->
+  <g transform="translate(140, 970)">
+    <line x1="0" y1="0" x2="710" y2="0" stroke="#18181b" stroke-width="1.2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <line x1="0" y1="-95" x2="0" y2="8" stroke="#a1a1aa" stroke-width="0.8"/>
+    <line x1="710" y1="-370" x2="710" y2="8" stroke="#a1a1aa" stroke-width="0.8"/>
+    <rect x="310" y="-12" width="90" height="22" fill="#ffffff"/>
+    <text x="355" y="4" font-size="13" font-weight="bold" text-anchor="middle" fill="#18181b">12.69 m</text>
+  </g>
+
+  <!-- BOTTOM SUB DIMENSIONS: 0.83m, 2.11m, 3.70m, 1.00m -->
+  <g transform="translate(140, 940)">
+    <!-- 0.83 m -->
+    <text x="18" y="-18" font-size="10" font-weight="bold" fill="#18181b">0.83 m</text>
+    <!-- 2.11 m -->
+    <line x1="10" y1="0" x2="125" y2="0" stroke="#18181b" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <rect x="50" y="-10" width="45" height="18" fill="#ffffff"/>
+    <text x="72" y="3" font-size="11" font-weight="600" text-anchor="middle" fill="#18181b">2.11 m</text>
+
+    <!-- 3.70 m -->
+    <line x1="240" y1="0" x2="450" y2="0" stroke="#18181b" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <rect x="320" y="-10" width="50" height="18" fill="#ffffff"/>
+    <text x="345" y="3" font-size="11" font-weight="600" text-anchor="middle" fill="#18181b">3.70 m</text>
+
+    <!-- 1.00 m (Elevator width) -->
+    <line x1="455" y1="0" x2="515" y2="0" stroke="#18181b" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <rect x="465" y="-10" width="40" height="18" fill="#ffffff"/>
+    <text x="485" y="3" font-size="10" font-weight="600" text-anchor="middle" fill="#18181b">1.00 m</text>
+  </g>
+
+  <!-- INNER RESTROOM & PARTITION DIMENSIONS -->
+  <!-- 1.18 m -->
+  <g transform="translate(340, 560)">
+    <line x1="0" y1="35" x2="0" y2="0" stroke="#18181b" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <text x="-4" y="22" font-size="10" font-weight="600" text-anchor="end" fill="#18181b" transform="rotate(-90 -4 22)">1.18 m</text>
+  </g>
+  <!-- 2.00 m -->
+  <g transform="translate(380, 620)">
+    <line x1="0" y1="0" x2="105" y2="0" stroke="#18181b" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <rect x="35" y="-8" width="40" height="16" fill="#ffffff"/>
+    <text x="55" y="4" font-size="10.5" font-weight="600" text-anchor="middle" fill="#18181b">2.00 m</text>
+  </g>
+  <!-- 1.66 m (Restroom top) -->
+  <g transform="translate(268, 652)">
+    <line x1="0" y1="0" x2="90" y2="0" stroke="#18181b" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <rect x="25" y="-8" width="40" height="16" fill="#ffffff"/>
+    <text x="45" y="4" font-size="10" font-weight="600" text-anchor="middle" fill="#18181b">1.66 m</text>
+  </g>
+  <!-- 2.43 m (Restroom height) -->
+  <g transform="translate(248, 700)">
+    <line x1="0" y1="0" x2="0" y2="160" stroke="#18181b" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <rect x="-8" y="65" width="16" height="35" fill="#ffffff" transform="rotate(-90 0 80)"/>
+    <text x="0" y="83" font-size="10" font-weight="600" text-anchor="middle" fill="#18181b" transform="rotate(-90 0 83)">2.43 m</text>
+  </g>
+
+  <!-- ==================== MAIN GALLERY WALLS (SOLID BLACK CAD) ==================== -->
+  <g id="walls" fill="#18181b">
+    <!-- Top Wall (Full Width) -->
+    <rect x="140" y="110" width="710" height="10"/>
+
+    <!-- Left Wall (Top to Corridor) -->
+    <rect x="140" y="110" width="10" height="760"/>
+
+    <!-- Bottom Left Corridor Extension -->
+    <rect x="268" y="695" width="8" height="175"/>
+    <rect x="140" y="865" width="136" height="10"/>
+
+    <!-- Restroom Partition Wall -->
+    <rect x="268" y="635" width="112" height="8"/>
+    <rect x="360" y="550" width="20" height="93"/>
+
+    <!-- Bottom Main Wall with Door opening to terrace/rear -->
+    <rect x="380" y="635" width="115" height="8"/>
+    <rect x="560" y="635" width="35" height="8"/>
+
+    <!-- Stepped Right Wall Structure -->
+    <rect x="595" y="535" width="8" height="108"/>
+    <rect x="595" y="535" width="105" height="8"/>
+    <rect x="695" y="345" width="8" height="198"/>
+    <rect x="695" y="345" width="155" height="8"/>
+    <rect x="842" y="110" width="8" height="243"/>
+  </g>
+
+  <!-- ==================== DOORS & OPENINGS ==================== -->
+  <!-- Top Left Corner Door -->
+  <g transform="translate(150, 120)">
+    <path d="M 0 0 L 45 0 A 45 45 0 0 1 0 45 Z" fill="#f8fafc" stroke="#64748b" stroke-width="1.2" stroke-dasharray="2,2"/>
+    <line x1="0" y1="0" x2="45" y2="0" stroke="#1e293b" stroke-width="2.5"/>
+    <line x1="0" y1="0" x2="0" y2="45" stroke="#1e293b" stroke-width="1.5"/>
+  </g>
+
+  <!-- Top Right Corner Door -->
+  <g transform="translate(842, 120) scale(-1, 1)">
+    <path d="M 0 0 L 45 0 A 45 45 0 0 1 0 45 Z" fill="#f8fafc" stroke="#64748b" stroke-width="1.2" stroke-dasharray="2,2"/>
+    <line x1="0" y1="0" x2="45" y2="0" stroke="#1e293b" stroke-width="2.5"/>
+    <line x1="0" y1="0" x2="0" y2="45" stroke="#1e293b" stroke-width="1.5"/>
+  </g>
+
+  <!-- Right Upper Double Door -->
+  <g transform="translate(720, 345)">
+    <!-- Left Leaf -->
+    <path d="M 0 0 L 42 0 A 42 42 0 0 0 0 -42 Z" fill="#f8fafc" stroke="#64748b" stroke-width="1.2" stroke-dasharray="2,2"/>
+    <line x1="0" y1="0" x2="42" y2="0" stroke="#1e293b" stroke-width="2.5"/>
+    <!-- Right Leaf -->
+    <path d="M 84 0 L 42 0 A 42 42 0 0 1 84 -42 Z" fill="#f8fafc" stroke="#64748b" stroke-width="1.2" stroke-dasharray="2,2"/>
+    <line x1="84" y1="0" x2="42" y2="0" stroke="#1e293b" stroke-width="2.5"/>
+  </g>
+
+  <!-- Bottom Single Door (Center Right) -->
+  <g transform="translate(495, 635)">
+    <path d="M 0 0 L 65 0 A 65 65 0 0 0 0 -65 Z" fill="#f8fafc" stroke="#64748b" stroke-width="1.2" stroke-dasharray="2,2"/>
+    <line x1="0" y1="0" x2="65" y2="0" stroke="#1e293b" stroke-width="2.5"/>
+  </g>
+
+  <!-- Restroom Entry Door -->
+  <g transform="translate(268, 650)">
+    <path d="M 0 45 L 0 0 A 45 45 0 0 0 -45 45 Z" fill="#f8fafc" stroke="#64748b" stroke-width="1.2" stroke-dasharray="2,2"/>
+    <line x1="0" y1="45" x2="0" y2="0" stroke="#1e293b" stroke-width="2.5"/>
+  </g>
+
+  <!-- Bottom Left Corridor Double Door -->
+  <g transform="translate(190, 865)">
+    <path d="M 0 0 L 35 0 A 35 35 0 0 0 0 -35 Z" fill="#f8fafc" stroke="#64748b" stroke-width="1.2" stroke-dasharray="2,2"/>
+    <line x1="0" y1="0" x2="35" y2="0" stroke="#1e293b" stroke-width="2.5"/>
+    <path d="M 70 0 L 35 0 A 35 35 0 0 1 70 -35 Z" fill="#f8fafc" stroke="#64748b" stroke-width="1.2" stroke-dasharray="2,2"/>
+    <line x1="70" y1="0" x2="35" y2="0" stroke="#1e293b" stroke-width="2.5"/>
+  </g>
+
+  <!-- ==================== ELEVATOR (BLUE ICON & BOX) ==================== -->
+  <g transform="translate(595, 643)">
+    <!-- Outer grey boundary box (1.00m x 1.00m) -->
+    <rect x="0" y="0" width="60" height="68" fill="#e2e8f0" stroke="#334155" stroke-width="3"/>
+    <rect x="12" y="14" width="36" height="40" rx="3" fill="#1e3a8a"/>
+    <!-- Elevator pictogram (3 people + up/down arrows) -->
+    <path d="M 23 23 L 30 17 L 37 23 M 30 18 L 30 29" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="24" cy="36" r="2.5" fill="#ffffff"/>
+    <rect x="21.5" y="39.5" width="5" height="9" rx="1.5" fill="#ffffff"/>
+    <circle cx="30" cy="35" r="2.8" fill="#ffffff"/>
+    <rect x="27.5" y="38.5" width="5" height="10" rx="1.5" fill="#ffffff"/>
+    <circle cx="36" cy="36" r="2.5" fill="#ffffff"/>
+    <rect x="33.5" y="39.5" width="5" height="9" rx="1.5" fill="#ffffff"/>
+    
+    <!-- Measurement label 1.00 m on side -->
+    <g transform="translate(70, 0)">
+      <line x1="0" y1="0" x2="0" y2="68" stroke="#18181b" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+      <rect x="-8" y="20" width="16" height="30" fill="#ffffff" transform="rotate(90 0 34)"/>
+      <text x="0" y="37" font-size="9" font-weight="bold" text-anchor="middle" fill="#18181b" transform="rotate(90 0 37)">1.00 m</text>
+    </g>
+    <!-- Measurement label 1.00 m bottom -->
+    <g transform="translate(0, 78)">
+      <line x1="0" y1="0" x2="60" y2="0" stroke="#18181b" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+      <rect x="15" y="-7" width="30" height="14" fill="#ffffff"/>
+      <text x="30" y="4" font-size="9" font-weight="bold" text-anchor="middle" fill="#18181b">1.00 m</text>
+    </g>
+  </g>
+
+  <!-- ==================== RESTROOM (BLUE WC PICTOGRAM) ==================== -->
+  <g transform="translate(305, 660)">
+    <rect x="0" y="0" width="28" height="30" rx="4" fill="#1d4ed8"/>
+    <!-- WC Man/Woman Icon -->
+    <!-- Man -->
+    <circle cx="9" cy="8" r="2.2" fill="#ffffff"/>
+    <path d="M 6 12 L 12 12 L 10.5 22 L 7.5 22 Z" fill="#ffffff"/>
+    <!-- Woman -->
+    <circle cx="19" cy="8" r="2.2" fill="#ffffff"/>
+    <path d="M 16 12 L 22 12 L 24 20 L 20 20 L 20 25 L 18 25 L 18 20 L 14 20 Z" fill="#ffffff"/>
+  </g>
+
+  <!-- ==================== 220V POWER OUTLETS ==================== -->
+  <!-- Top Left Outlet -->
+  <use href="#socket220" x="165" y="145"/>
+  <!-- Top Right Outlet -->
+  <use href="#socket220" x="835" y="145"/>
+  <!-- Upper Right Wall Outlet -->
+  <use href="#socket220" x="835" y="325"/>
+  <!-- Pillar / Center Partition Outlet -->
+  <use href="#socket220" x="370" y="535"/>
+  <!-- Bottom Left Corridor Outlet -->
+  <use href="#socket220" x="160" y="840"/>
+
+  <!-- ==================== NORTH ARROW & SCALE ==================== -->
+  <g transform="translate(140, 1040)">
+    <circle cx="15" cy="15" r="14" fill="none" stroke="#18181b" stroke-width="1.2"/>
+    <path d="M 15 3 L 20 15 L 15 12 L 10 15 Z" fill="#18181b"/>
+    <text x="15" y="27" font-size="8" font-weight="900" text-anchor="middle" fill="#18181b">N</text>
+    
+    <!-- Metric Scale Bar -->
+    <g transform="translate(60, 10)">
+      <rect x="0" y="0" width="40" height="4" fill="#18181b"/>
+      <rect x="40" y="0" width="40" height="4" fill="#ffffff" stroke="#18181b" stroke-width="0.8"/>
+      <rect x="80" y="0" width="80" height="4" fill="#18181b"/>
+      <text x="0" y="14" font-size="8" font-family="monospace" fill="#71717a">0</text>
+      <text x="40" y="14" font-size="8" font-family="monospace" fill="#71717a">1m</text>
+      <text x="80" y="14" font-size="8" font-family="monospace" fill="#71717a">2m</text>
+      <text x="160" y="14" font-size="8" font-family="monospace" fill="#71717a">4m</text>
+    </g>
+  </g>
+</svg>'''
+
+with open('src/assets/images/lim303_floor_plan_actual.svg', 'w', encoding='utf-8') as f:
+    f.write(svg_content)
+
+print("Created lim303_floor_plan_actual.svg successfully!")

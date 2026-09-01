@@ -6,7 +6,7 @@
 import React, { useState, useRef } from 'react';
 import { HelpCircle, Landmark, ShieldCheck, Mail, Send, Award, Compass, RefreshCw, Layout, Smartphone, Phone, CheckCircle2, Upload, Check, RotateCcw, Loader2 } from 'lucide-react';
 import { GalleryConfig, RentalInquiry } from '../types.ts';
-import defaultFloorPlanImg from '../assets/images/lim303_floor_plan_1788158721862.jpg';
+import defaultFloorPlanImg from '../assets/images/lim303_floor_plan_actual.svg';
 
 interface RentalGuideProps {
   config: GalleryConfig;
@@ -31,8 +31,7 @@ export default function RentalGuide({ config, onAddInquiry, onUpdateConfig, isAd
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const isCustomFloorPlan = config.floorPlanImage && config.floorPlanImage.startsWith('data:image/');
-  const activeFloorPlan = isCustomFloorPlan ? config.floorPlanImage : defaultFloorPlanImg;
+  const activeFloorPlan = config.floorPlanImage || defaultFloorPlanImg;
 
   const processFloorPlanFile = (file: File) => {
     if (!file.type.startsWith('image/')) {

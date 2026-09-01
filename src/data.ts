@@ -8,7 +8,7 @@ import galleryMainHallImg from './assets/images/gallery_main_hall_1788248591245.
 import gallerySideViewImg from './assets/images/gallery_side_view_1788248608964.jpg';
 import galleryWallPerspectiveImg from './assets/images/gallery_wall_perspective_1788248659744.jpg';
 import galleryReceptionImg from './assets/images/gallery_reception_1788248626793.jpg';
-import lim303FloorPlanImg from './assets/images/lim303_floor_plan_1788158721862.jpg';
+import lim303FloorPlanImg from './assets/images/lim303_floor_plan_actual.svg';
 
 export const DEFAULT_GALLERY_IMAGES = [
   galleryMainHallImg,
