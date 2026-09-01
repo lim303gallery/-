@@ -10,6 +10,15 @@ import galleryWallPerspectiveImg from './assets/images/gallery_wall_perspective_
 import galleryReceptionImg from './assets/images/gallery_reception_1788248626793.jpg';
 import galleryFloorPlanBlueprintImg from './assets/images/gallery_floorplan_blueprint_1788248676374.jpg';
 
+export const DEFAULT_GALLERY_IMAGES = [
+  galleryMainHallImg,
+  gallerySideViewImg,
+  galleryWallPerspectiveImg,
+  galleryReceptionImg,
+];
+
+export const DEFAULT_FLOOR_PLAN_IMAGE = galleryFloorPlanBlueprintImg;
+
 export const INITIAL_CONFIG: GalleryConfig = {
   siteName: 'LIM303 GALLERY',
   siteSubName: 'PROJECT & EXHIBITION SPACE',
@@ -17,12 +26,7 @@ export const INITIAL_CONFIG: GalleryConfig = {
   aboutText: 'LIM303 GALLERY는 독창적인 시각을 지닌 현대 미술가과 대중을 연결하는 세련되고 감각적인 복합 예술 공간입니다. 백색의 미니멀한 공간 구성과 정교한 조명 시스템을 통해, 작품 본연의 온전한 호흡을 지탱합니다. 참신한 기획 전시부터 수준 높은 개인전, 브랜드 팝업 및 창의적 대관까지 예술이 살아 숨 쉬는 최상의 환경을 제공합니다.',
   aboutImage: galleryMainHallImg,
   aboutImage2: gallerySideViewImg,
-  aboutImages: [
-    galleryMainHallImg,
-    gallerySideViewImg,
-    galleryWallPerspectiveImg,
-    galleryReceptionImg,
-  ],
+  aboutImages: DEFAULT_GALLERY_IMAGES,
   
   // Contact details
   address: '서울특별시 강남구 압구정로32길 32 4층',
@@ -52,7 +56,7 @@ export const INITIAL_CONFIG: GalleryConfig = {
   rentalCapacity: '최대 60명 동시 수용 가능',
   rentalHeight: '2.6m ~ 4.0m',
   rentalEquipment: '전문가용 레일 조명, 음향 스피커, 와이파이, 빔프로젝터, 전시대 및 이동식 화이트 가벽',
-  floorPlanImage: galleryFloorPlanBlueprintImg,
+  floorPlanImage: DEFAULT_FLOOR_PLAN_IMAGE,
   showHeroCurrentExhibition: false, // Hidden by default, can be toggled on anytime
   formspreeEndpoint: 'https://formspree.io/f/mljegbyn',
   adminPassword: '0821',

@@ -13,16 +13,16 @@ import Footer from './components/Footer.tsx';
 import EventPopup from './components/EventPopup.tsx';
 
 import { GalleryConfig, ExhibitionPost, RentalInquiry } from './types.ts';
-import { INITIAL_CONFIG, INITIAL_EXHIBITIONS, INITIAL_INQUIRIES } from './data.ts';
+import { INITIAL_CONFIG, INITIAL_EXHIBITIONS, INITIAL_INQUIRIES, DEFAULT_GALLERY_IMAGES, DEFAULT_FLOOR_PLAN_IMAGE } from './data.ts';
 
-const CONFIG_STORAGE_KEY = 'lim303_gallery_config_v3';
-const POSTS_STORAGE_KEY = 'lim303_gallery_posts_v3';
-const INQUIRIES_STORAGE_KEY = 'lim303_gallery_inquiries_v3';
+const CONFIG_STORAGE_KEY = 'lim303_gallery_config_v4';
+const POSTS_STORAGE_KEY = 'lim303_gallery_posts_v4';
+const INQUIRIES_STORAGE_KEY = 'lim303_gallery_inquiries_v4';
 
 export default function App() {
   const [config, setConfig] = useState<GalleryConfig>(() => {
     let savedData: Partial<GalleryConfig> | null = null;
-    const keysToCheck = [CONFIG_STORAGE_KEY, 'lim303_gallery_config_v2', 'lim303_gallery_config', 'g629_config'];
+    const keysToCheck = [CONFIG_STORAGE_KEY, 'lim303_gallery_config_v3', 'lim303_gallery_config_v2', 'lim303_gallery_config', 'g629_config'];
     
     for (const key of keysToCheck) {
       try {
@@ -40,8 +40,11 @@ export default function App() {
     }
 
     if (savedData) {
-      // Check if saved aboutImages contain old placeholder unsplash urls
-      const hasOnlyRealOrEmbedded = savedData.aboutImages && savedData.aboutImages.length > 0 && !savedData.aboutImages.some(img => img.includes('unsplash.com'));
+      const hasOnlyCustomUploads = savedData.aboutImages && savedData.aboutImages.length > 0 && savedData.aboutImages.every(img => typeof img === 'string' && img.startsWith('data:image/'));
+      const finalAboutImages = hasOnlyCustomUploads ? savedData.aboutImages : DEFAULT_GALLERY_IMAGES;
+      const finalFloorPlan = (savedData.floorPlanImage && savedData.floorPlanImage.startsWith('data:image/')) 
+        ? savedData.floorPlanImage 
+        : DEFAULT_FLOOR_PLAN_IMAGE;
 
       return {
         ...INITIAL_CONFIG,
@@ -50,14 +53,15 @@ export default function App() {
         address: '서울특별시 강남구 압구정로32길 32 4층',
         phone: savedData.phone || INITIAL_CONFIG.phone,
         email: savedData.email || INITIAL_CONFIG.email,
-        aboutImages: hasOnlyRealOrEmbedded ? savedData.aboutImages : INITIAL_CONFIG.aboutImages,
-        aboutImage: INITIAL_CONFIG.aboutImage,
-        aboutImage2: INITIAL_CONFIG.aboutImage2,
+        adminPassword: savedData.adminPassword || '0821',
+        aboutImages: finalAboutImages,
+        aboutImage: finalAboutImages[0] || DEFAULT_GALLERY_IMAGES[0],
+        aboutImage2: finalAboutImages[1] || DEFAULT_GALLERY_IMAGES[1],
+        floorPlanImage: finalFloorPlan,
         rentalArea: savedData.rentalArea || INITIAL_CONFIG.rentalArea,
         rentalCapacity: savedData.rentalCapacity || INITIAL_CONFIG.rentalCapacity,
         rentalHeight: savedData.rentalHeight || INITIAL_CONFIG.rentalHeight,
         rentalEquipment: savedData.rentalEquipment || INITIAL_CONFIG.rentalEquipment,
-        floorPlanImage: (savedData.floorPlanImage && savedData.floorPlanImage.startsWith('data:image')) ? savedData.floorPlanImage : INITIAL_CONFIG.floorPlanImage,
         showHeroCurrentExhibition: savedData.showHeroCurrentExhibition ?? INITIAL_CONFIG.showHeroCurrentExhibition,
         formspreeEndpoint: savedData.formspreeEndpoint || INITIAL_CONFIG.formspreeEndpoint,
       };

@@ -350,13 +350,13 @@ export default function Customizer({
                       관리자 로그인 비밀번호
                     </label>
                     <input
-                      type="text"
-                      value={config.adminPassword || '0821'}
+                      type="password"
+                      value={config.adminPassword || ''}
                       onChange={(e) => handleFieldChange('adminPassword', e.target.value)}
-                      placeholder="0821"
+                      placeholder="새 비밀번호 입력"
                       className="w-full text-xs font-mono font-bold text-zinc-800 p-2.5 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none focus:border-zinc-900"
                     />
-                    <p className="text-[10px] text-zinc-400 mt-1">상단 관리자 로그인 및 보호 콘텐츠 열람 시 사용되는 비밀번호입니다.</p>
+                    <p className="text-[10px] text-zinc-400 mt-1">관리자 로그인 및 보호 콘텐츠 열람 시 사용되는 비밀번호입니다.</p>
                   </div>
                 </div>
               </div>

@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Calendar, User, ArrowUpRight, X } from 'lucide-react';
+import { Calendar, User, ArrowUpRight, X, Lock, Unlock, ShieldCheck, KeyRound, AlertCircle } from 'lucide-react';
 import { GalleryConfig, ExhibitionPost } from '../types.ts';
 
 interface ExhibitionsProps {
@@ -15,8 +15,43 @@ interface ExhibitionsProps {
 type TabType = 'all' | 'current' | 'upcoming' | 'past' | 'notice';
 
 export default function Exhibitions({ config, posts }: ExhibitionsProps) {
+  const [isUnlocked, setIsUnlocked] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem('lim303_exhibitions_unlocked') === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [passwordInput, setPasswordInput] = useState('');
+  const [authError, setAuthError] = useState('');
   const [selectedTab, setSelectedTab] = useState<TabType>('all');
   const [selectedPost, setSelectedPost] = useState<ExhibitionPost | null>(null);
+
+  const handleUnlock = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    const targetPassword = config.adminPassword || '0821';
+    if (passwordInput.trim() === targetPassword.trim()) {
+      setIsUnlocked(true);
+      try {
+        sessionStorage.setItem('lim303_exhibitions_unlocked', 'true');
+      } catch {
+        // ignore
+      }
+      setPasswordInput('');
+    } else {
+      setAuthError('비밀번호가 올바르지 않습니다.');
+    }
+  };
+
+  const handleLock = () => {
+    setIsUnlocked(false);
+    try {
+      sessionStorage.removeItem('lim303_exhibitions_unlocked');
+    } catch {
+      // ignore
+    }
+  };
 
   const tabs: { id: TabType; label: string }[] = [
     { id: 'all', label: '전체' },
@@ -74,12 +109,18 @@ export default function Exhibitions({ config, posts }: ExhibitionsProps) {
         
         {/* Section Heading */}
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <span 
-            className="text-xs uppercase tracking-[0.35em] font-medium font-display block mb-3"
-            style={{ color: config.pointColor }}
-          >
-            Exhibitions & Notices
-          </span>
+          <div className="inline-flex items-center space-x-1.5 mb-3">
+            <span 
+              className="text-xs uppercase tracking-[0.35em] font-medium font-display block"
+              style={{ color: config.pointColor }}
+            >
+              Exhibitions & Notices
+            </span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-zinc-200 text-zinc-700 font-semibold tracking-wider flex items-center space-x-1">
+              <Lock size={10} className="inline mr-0.5" />
+              <span>관리자 전용</span>
+            </span>
+          </div>
           <h2 
             className="text-3xl md:text-4xl font-bold md:font-semibold tracking-tight text-zinc-950 mb-4"
             style={{ fontFamily: config.fontFamily === 'serif' ? 'var(--font-serif)' : 'var(--font-sans)' }}
@@ -92,94 +133,164 @@ export default function Exhibitions({ config, posts }: ExhibitionsProps) {
           />
         </div>
 
-        {/* Categories Tab Navigation */}
-        <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-12">
-          {tabs.map((tab) => {
-            const isActive = selectedTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setSelectedTab(tab.id)}
-                className={`px-5 py-2 text-xs font-semibold rounded-full tracking-wider border transition-all cursor-pointer ${
-                  isActive
-                    ? 'white-text shadow-sm'
-                    : 'bg-white text-zinc-600 border-zinc-200 hover:text-zinc-900 hover:border-zinc-300'
-                }`}
-                style={isActive ? { backgroundColor: config.pointColor, borderColor: config.pointColor, color: '#fff' } : undefined}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
+        {/* LOCKED STATE (When not authenticated) */}
+        {!isUnlocked ? (
+          <div className="max-w-md mx-auto bg-white rounded-2xl border border-neutral-200/80 p-8 md:p-10 shadow-sm text-center">
+            <div className="w-14 h-14 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center mx-auto mb-5 text-zinc-700">
+              <KeyRound size={26} style={{ color: config.pointColor }} />
+            </div>
+            
+            <h3 
+              className="text-lg font-bold text-zinc-900 mb-2"
+              style={{ fontFamily: config.fontFamily === 'serif' ? 'var(--font-serif)' : 'var(--font-sans)' }}
+            >
+              관리자 전용 열람 구역
+            </h3>
+            <p className="text-xs text-zinc-500 font-light leading-relaxed mb-6">
+              현재 기획 전시 및 공지 소식은 갤러리 관리자 인증 후 열람하실 수 있습니다. 비밀번호를 입력해 주세요.
+            </p>
 
-        {/* Empty State */}
-        {filteredPosts.length === 0 && (
-          <div className="text-center py-20 bg-white rounded-2xl border border-zinc-100 max-w-2xl mx-auto">
-            <p className="text-zinc-400 text-sm font-light mb-2 font-sans">현재 카테고리에 등록된 항목이 없습니다.</p>
-            <p className="text-xs font-mono text-zinc-300">NO EXHIBITIONS LOADED IN THIS CATEGORY</p>
+            <form onSubmit={handleUnlock} className="space-y-4 text-left">
+              <div>
+                <input
+                  type="password"
+                  value={passwordInput}
+                  onChange={(e) => {
+                    setPasswordInput(e.target.value);
+                    if (authError) setAuthError('');
+                  }}
+                  placeholder="비밀번호 입력"
+                  className="w-full text-zinc-900 py-2.5 px-4 text-sm bg-zinc-50 border border-zinc-250 rounded-xl focus:bg-white focus:outline-none focus:border-zinc-900 transition-colors"
+                  autoFocus
+                />
+              </div>
+
+              {authError && (
+                <div className="flex items-center space-x-1.5 text-xs text-rose-600 bg-rose-50 p-2.5 rounded-lg border border-rose-200">
+                  <AlertCircle size={14} className="shrink-0" />
+                  <span>{authError}</span>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="w-full py-3 rounded-xl text-xs font-bold text-white shadow-xs transition-all hover:opacity-90 cursor-pointer flex items-center justify-center space-x-1.5"
+                style={{ backgroundColor: config.pointColor }}
+              >
+                <Unlock size={14} />
+                <span>인증 및 열람하기</span>
+              </button>
+            </form>
+          </div>
+        ) : (
+          /* UNLOCKED STATE (Admin authenticated) */
+          <div>
+            {/* Top Admin Status Bar */}
+            <div className="flex items-center justify-between bg-white border border-neutral-200/80 px-4 py-2.5 rounded-xl mb-8 max-w-4xl mx-auto shadow-xs">
+              <div className="flex items-center space-x-2 text-xs font-semibold text-emerald-800">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>관리자 인증 완료 (열람 모드)</span>
+              </div>
+              <button
+                onClick={handleLock}
+                className="px-3 py-1 text-xs font-semibold text-zinc-600 hover:text-zinc-900 bg-zinc-100 hover:bg-zinc-200 rounded-lg transition-colors flex items-center space-x-1 cursor-pointer"
+                title="다시 잠그기"
+              >
+                <Lock size={12} />
+                <span>열람 잠금</span>
+              </button>
+            </div>
+
+            {/* Categories Tab Navigation */}
+            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-12">
+              {tabs.map((tab) => {
+                const isActive = selectedTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setSelectedTab(tab.id)}
+                    className={`px-5 py-2 text-xs font-semibold rounded-full tracking-wider border transition-all cursor-pointer ${
+                      isActive
+                        ? 'white-text shadow-sm'
+                        : 'bg-white text-zinc-600 border-zinc-200 hover:text-zinc-900 hover:border-zinc-300'
+                    }`}
+                    style={isActive ? { backgroundColor: config.pointColor, borderColor: config.pointColor, color: '#fff' } : undefined}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Empty State */}
+            {filteredPosts.length === 0 && (
+              <div className="text-center py-20 bg-white rounded-2xl border border-zinc-100 max-w-2xl mx-auto">
+                <p className="text-zinc-400 text-sm font-light mb-2 font-sans">현재 카테고리에 등록된 항목이 없습니다.</p>
+                <p className="text-xs font-mono text-zinc-300">NO EXHIBITIONS LOADED IN THIS CATEGORY</p>
+              </div>
+            )}
+
+            {/* Grid layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredPosts.map((post) => {
+                const pill = getCategoryTheme(post.category);
+                return (
+                  <article
+                    key={post.id}
+                    onClick={() => setSelectedPost(post)}
+                    className={`group rounded-xl overflow-hidden transition-all duration-300 flex flex-col cursor-pointer ${getCardStyleClass()}`}
+                  >
+                    {/* Card Thumbnail */}
+                    <div className="aspect-4/3 w-full bg-zinc-100 relative overflow-hidden shrink-0 border-b border-zinc-100">
+                      <img
+                        src={post.imageUrl || 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=800'}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 duration-700"
+                        referrerPolicy="no-referrer"
+                      />
+                      {/* Category overlay label */}
+                      <span className={`absolute top-4 left-4 text-[10px] font-bold px-2.5 py-1 rounded-md tracking-wider ${pill.text} ${pill.bg} shadow-xs`}>
+                        {getCategoryLabel(post.category)}
+                      </span>
+                    </div>
+
+                    {/* Card Body */}
+                    <div className="p-6 flex-1 flex flex-col justify-between">
+                      <div>
+                        <span className="text-xs font-semibold text-zinc-400 block mb-1 text-left">
+                          {post.artist}
+                        </span>
+                        <h3 
+                          className="text-lg font-bold text-zinc-900 group-hover:text-zinc-950 line-clamp-1 mb-2 tracking-tight text-left"
+                          style={{ fontFamily: config.fontFamily === 'serif' ? 'var(--font-serif)' : 'var(--font-sans)' }}
+                        >
+                          {post.title}
+                        </h3>
+                        <p className="text-zinc-500 text-xs font-light line-clamp-2 text-justify mb-5 leading-relaxed">
+                          {post.description}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-4 border-t border-zinc-100 text-[11px] font-mono text-zinc-400 font-sans">
+                        <span className="flex items-center space-x-1">
+                          <Calendar size={11} />
+                          <span>{post.period}</span>
+                        </span>
+                        <span 
+                          className="flex items-center space-x-0.5 group-hover:underline font-bold"
+                          style={{ color: config.pointColor }}
+                        >
+                          <span>보기</span>
+                          <ArrowUpRight size={10} className="transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                        </span>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
           </div>
         )}
-
-        {/* Grid layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPosts.map((post) => {
-            const pill = getCategoryTheme(post.category);
-            return (
-              <article
-                key={post.id}
-                onClick={() => setSelectedPost(post)}
-                className={`group rounded-xl overflow-hidden transition-all duration-300 flex flex-col cursor-pointer ${getCardStyleClass()}`}
-              >
-                {/* Card Thumbnail */}
-                <div className="aspect-4/3 w-full bg-zinc-100 relative overflow-hidden shrink-0 border-b border-zinc-100">
-                  <img
-                    src={post.imageUrl || 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=800'}
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 duration-700"
-                    referrerPolicy="no-referrer"
-                  />
-                  {/* Category overlay label */}
-                  <span className={`absolute top-4 left-4 text-[10px] font-bold px-2.5 py-1 rounded-md tracking-wider ${pill.text} ${pill.bg} shadow-xs`}>
-                    {getCategoryLabel(post.category)}
-                  </span>
-                </div>
-
-                {/* Card Body */}
-                <div className="p-6 flex-1 flex flex-col justify-between">
-                  <div>
-                    <span className="text-xs font-semibold text-zinc-400 block mb-1 text-left">
-                      {post.artist}
-                    </span>
-                    <h3 
-                      className="text-lg font-bold text-zinc-900 group-hover:text-zinc-950 line-clamp-1 mb-2 tracking-tight text-left"
-                      style={{ fontFamily: config.fontFamily === 'serif' ? 'var(--font-serif)' : 'var(--font-sans)' }}
-                    >
-                      {post.title}
-                    </h3>
-                    <p className="text-zinc-500 text-xs font-light line-clamp-2 text-justify mb-5 leading-relaxed">
-                      {post.description}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-zinc-100 text-[11px] font-mono text-zinc-400 font-sans">
-                    <span className="flex items-center space-x-1">
-                      <Calendar size={11} />
-                      <span>{post.period}</span>
-                    </span>
-                    <span 
-                      className="flex items-center space-x-0.5 group-hover:underline font-bold"
-                      style={{ color: config.pointColor }}
-                    >
-                      <span>보기</span>
-                      <ArrowUpRight size={10} className="transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </span>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
 
       </div>
 

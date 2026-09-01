@@ -31,7 +31,9 @@ export default function RentalGuide({ config, onAddInquiry, onUpdateConfig, isAd
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const activeFloorPlan = config.floorPlanImage || defaultFloorPlanImg;
+  const activeFloorPlan = (config.floorPlanImage && !config.floorPlanImage.includes('unsplash.com')) 
+    ? config.floorPlanImage 
+    : defaultFloorPlanImg;
 
   const processFloorPlanFile = (file: File) => {
     if (!file.type.startsWith('image/')) {
