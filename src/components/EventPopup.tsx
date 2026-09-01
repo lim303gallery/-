@@ -15,7 +15,6 @@ interface EventPopupProps {
 
 export default function EventPopup({ config, isOpen: controlledIsOpen, onClose: controlledOnClose }: EventPopupProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [doNotShowToday, setDoNotShowToday] = useState(false);
 
   useEffect(() => {
     if (controlledIsOpen !== undefined) {
@@ -23,29 +22,15 @@ export default function EventPopup({ config, isOpen: controlledIsOpen, onClose: 
       return;
     }
 
-    const hideExpiry = localStorage.getItem('lim303_hide_open_event_popup');
-    if (hideExpiry) {
-      const expiryTime = parseInt(hideExpiry, 10);
-      if (Date.now() < expiryTime) {
-        setIsOpen(false);
-        return;
-      }
-    }
-
-    // Show popup shortly after loading for a smooth entry animation
+    // Always display visual banner upon site landing / address bar access
     const timer = setTimeout(() => {
       setIsOpen(true);
-    }, 600);
+    }, 250);
 
     return () => clearTimeout(timer);
   }, [controlledIsOpen]);
 
   const handleClose = () => {
-    if (doNotShowToday) {
-      // Hide for 24 hours
-      const expiryTime = Date.now() + 24 * 60 * 60 * 1000;
-      localStorage.setItem('lim303_hide_open_event_popup', expiryTime.toString());
-    }
     setIsOpen(false);
     if (controlledOnClose) {
       controlledOnClose();
@@ -171,24 +156,18 @@ export default function EventPopup({ config, isOpen: controlledIsOpen, onClose: 
           </button>
         </div>
 
-        {/* Footer with '오늘 하루 보지 않기' option */}
+        {/* Footer close controls */}
         <div className="bg-slate-100/90 px-6 py-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-600">
-          <label className="flex items-center space-x-2 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={doNotShowToday}
-              onChange={(e) => setDoNotShowToday(e.target.checked)}
-              className="w-4 h-4 rounded border-slate-300 text-slate-800 focus:ring-slate-800 cursor-pointer"
-            />
-            <span className="text-slate-700 text-xs font-medium">오늘 하루 동안 보지 않기</span>
-          </label>
+          <span className="text-[11px] text-slate-500 font-sans">
+            압구정로32길 32 4F · LIM303 GALLERY
+          </span>
 
           <button
             type="button"
             onClick={handleClose}
-            className="text-slate-700 hover:text-slate-950 font-bold px-3 py-1 rounded hover:bg-slate-200 transition-colors cursor-pointer text-xs"
+            className="text-slate-800 hover:text-slate-950 font-bold px-3 py-1 rounded-lg hover:bg-slate-200/80 transition-colors cursor-pointer text-xs"
           >
-            닫기
+            창 닫기
           </button>
         </div>
       </div>

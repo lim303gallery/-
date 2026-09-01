@@ -1158,41 +1158,47 @@ export default function Customizer({
               </div>
 
               <div className="border-t border-zinc-100 pt-5">
-                <h4 className="font-bold text-zinc-900 text-sm tracking-tight mb-4">학예 시간 운영계획</h4>
-                <div className="space-y-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="font-bold text-zinc-900 text-sm tracking-tight">갤러리 운영시간 (고정)</h4>
+                  <span className="text-[10px] text-zinc-400 font-mono">고정 운영시간</span>
+                </div>
+                <div className="space-y-3 bg-zinc-50 border border-zinc-200 rounded-xl p-4">
                   <div>
                     <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1">
-                      평일 시간 계획
+                      평일 운영시간
                     </label>
                     <input
                       type="text"
-                      value={config.hoursWeekday}
-                      onChange={(e) => handleFieldChange('hoursWeekday', e.target.value)}
-                      className="w-full text-xs text-zinc-850 p-2.5 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none"
+                      value="오전 10:00 - 오후 6:00"
+                      disabled
+                      readOnly
+                      className="w-full text-xs text-zinc-700 p-2.5 bg-zinc-100/80 border border-zinc-200 rounded-lg cursor-not-allowed font-medium"
                     />
                   </div>
 
                   <div>
                     <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1">
-                      주말 및 공휴일 계획
+                      주말 및 공휴일 운영시간
                     </label>
                     <input
                       type="text"
-                      value={config.hoursWeekend}
-                      onChange={(e) => handleFieldChange('hoursWeekend', e.target.value)}
-                      className="w-full text-xs text-zinc-850 p-2.5 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none"
+                      value="오전 10:00 - 오후 6:00"
+                      disabled
+                      readOnly
+                      className="w-full text-xs text-zinc-700 p-2.5 bg-zinc-100/80 border border-zinc-200 rounded-lg cursor-not-allowed font-medium"
                     />
                   </div>
 
                   <div>
                     <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1">
-                      정기 휴관 약관
+                      정기 휴관
                     </label>
                     <input
                       type="text"
                       value={config.closedDays}
-                      onChange={(e) => handleFieldChange('closedDays', e.target.value)}
-                      className="w-full text-xs text-zinc-850 p-2.5 bg-zinc-50 border border-zinc-200 rounded-lg focus:outline-none"
+                      disabled
+                      readOnly
+                      className="w-full text-xs text-zinc-700 p-2.5 bg-zinc-100/80 border border-zinc-200 rounded-lg cursor-not-allowed font-medium"
                     />
                   </div>
                 </div>

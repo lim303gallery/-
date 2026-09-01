@@ -15,33 +15,38 @@ import EventPopup from './components/EventPopup.tsx';
 import { GalleryConfig, ExhibitionPost, RentalInquiry } from './types.ts';
 import { INITIAL_CONFIG, INITIAL_EXHIBITIONS, INITIAL_INQUIRIES, DEFAULT_GALLERY_IMAGES, DEFAULT_FLOOR_PLAN_IMAGE } from './data.ts';
 
-const CONFIG_STORAGE_KEY = 'lim303_gallery_config_v4';
-const POSTS_STORAGE_KEY = 'lim303_gallery_posts_v4';
-const INQUIRIES_STORAGE_KEY = 'lim303_gallery_inquiries_v4';
+const CONFIG_STORAGE_KEY = 'lim303_gallery_config_v5';
+const POSTS_STORAGE_KEY = 'lim303_gallery_posts_v5';
+const INQUIRIES_STORAGE_KEY = 'lim303_gallery_inquiries_v5';
 
 export default function App() {
   const [config, setConfig] = useState<GalleryConfig>(() => {
+    // Purge legacy dirty caches
+    const oldKeys = [
+      'lim303_gallery_config_v4',
+      'lim303_gallery_config_v3',
+      'lim303_gallery_config_v2',
+      'lim303_gallery_config',
+      'g629_config'
+    ];
+    oldKeys.forEach(k => {
+      try { localStorage.removeItem(k); } catch { /* ignore */ }
+    });
+
     let savedData: Partial<GalleryConfig> | null = null;
-    const keysToCheck = [CONFIG_STORAGE_KEY, 'lim303_gallery_config_v3', 'lim303_gallery_config_v2', 'lim303_gallery_config', 'g629_config'];
-    
-    for (const key of keysToCheck) {
-      try {
-        const raw = localStorage.getItem(key);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (parsed && typeof parsed === 'object') {
-            savedData = parsed;
-            break;
-          }
+    try {
+      const raw = localStorage.getItem(CONFIG_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          savedData = parsed;
         }
-      } catch {
-        // continue
       }
+    } catch {
+      // continue
     }
 
     if (savedData) {
-      const hasOnlyCustomUploads = savedData.aboutImages && savedData.aboutImages.length > 0 && savedData.aboutImages.every(img => typeof img === 'string' && img.startsWith('data:image/'));
-      const finalAboutImages = hasOnlyCustomUploads ? savedData.aboutImages : DEFAULT_GALLERY_IMAGES;
       const finalFloorPlan = (savedData.floorPlanImage && savedData.floorPlanImage.startsWith('data:image/')) 
         ? savedData.floorPlanImage 
         : DEFAULT_FLOOR_PLAN_IMAGE;
@@ -51,12 +56,16 @@ export default function App() {
         ...savedData,
         siteName: 'LIM303 GALLERY',
         address: '서울특별시 강남구 압구정로32길 32 4층',
+        hoursWeekday: '오전 10:00 - 오후 6:00',
+        hoursWeekend: '오전 10:00 - 오후 6:00',
         phone: savedData.phone || INITIAL_CONFIG.phone,
         email: savedData.email || INITIAL_CONFIG.email,
         adminPassword: savedData.adminPassword || '0821',
-        aboutImages: finalAboutImages,
-        aboutImage: finalAboutImages[0] || DEFAULT_GALLERY_IMAGES[0],
-        aboutImage2: finalAboutImages[1] || DEFAULT_GALLERY_IMAGES[1],
+        aboutImages: (savedData.aboutImages && Array.isArray(savedData.aboutImages) && savedData.aboutImages.length > 0)
+          ? savedData.aboutImages
+          : DEFAULT_GALLERY_IMAGES,
+        aboutImage: (savedData.aboutImages && savedData.aboutImages[0]) || savedData.aboutImage || DEFAULT_GALLERY_IMAGES[0],
+        aboutImage2: (savedData.aboutImages && savedData.aboutImages[1]) || savedData.aboutImage2 || DEFAULT_GALLERY_IMAGES[1],
         floorPlanImage: finalFloorPlan,
         rentalArea: savedData.rentalArea || INITIAL_CONFIG.rentalArea,
         rentalCapacity: savedData.rentalCapacity || INITIAL_CONFIG.rentalCapacity,
@@ -66,39 +75,37 @@ export default function App() {
         formspreeEndpoint: savedData.formspreeEndpoint || INITIAL_CONFIG.formspreeEndpoint,
       };
     }
-    return INITIAL_CONFIG;
+    return {
+      ...INITIAL_CONFIG,
+      aboutImages: DEFAULT_GALLERY_IMAGES,
+      aboutImage: DEFAULT_GALLERY_IMAGES[0],
+      aboutImage2: DEFAULT_GALLERY_IMAGES[1],
+      floorPlanImage: DEFAULT_FLOOR_PLAN_IMAGE,
+    };
   });
 
   const [posts] = useState<ExhibitionPost[]>(() => {
-    const keysToCheck = [POSTS_STORAGE_KEY, 'lim303_gallery_posts', 'g629_posts'];
-    for (const key of keysToCheck) {
-      try {
-        const raw = localStorage.getItem(key);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed;
-          }
-        }
-      } catch {
-        // continue
+    try {
+      const raw = localStorage.getItem(POSTS_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
+    } catch {
+      // ignore
     }
     return INITIAL_EXHIBITIONS;
   });
 
   const [inquiries, setInquiries] = useState<RentalInquiry[]>(() => {
-    const keysToCheck = [INQUIRIES_STORAGE_KEY, 'lim303_gallery_inquiries', 'g629_inquiries'];
-    for (const key of keysToCheck) {
-      try {
-        const raw = localStorage.getItem(key);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed)) return parsed;
-        }
-      } catch {
-        // continue
+    try {
+      const raw = localStorage.getItem(INQUIRIES_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed;
       }
+    } catch {
+      // ignore
     }
     return INITIAL_INQUIRIES;
   });
@@ -178,6 +185,19 @@ export default function App() {
   // Extract ongoing current active or first exhibition poster for layout decoration
   const currentExhibit = posts.find((p) => p.category === 'current');
 
+  // Global admin authentication state synchronized with sessionStorage
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem('lim303_exhibitions_unlocked') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleAdminAuthChange = (unlocked: boolean) => {
+    setIsAdmin(unlocked);
+  };
+
   return (
     <div 
       style={dynamicRootStyle} 
@@ -198,7 +218,7 @@ export default function App() {
         <Hero
           config={config}
           currentExhibit={currentExhibit}
-          isAdmin={false}
+          isAdmin={isAdmin}
           onExploreClick={() => {
             const el = document.getElementById('about');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -209,20 +229,22 @@ export default function App() {
         {/* Gallery context introduction */}
         <About 
           config={config} 
-          isAdmin={false}
+          isAdmin={isAdmin}
           onUpdateConfig={setConfig} 
         />
 
         {/* Dynamic exhibitions viewer grid */}
         <Exhibitions 
           config={config} 
-          posts={posts} 
+          posts={posts}
+          isUnlocked={isAdmin}
+          onUnlockChange={handleAdminAuthChange}
         />
 
         {/* Space guideline and live inquiry forms */}
         <RentalGuide 
           config={config} 
-          isAdmin={false}
+          isAdmin={isAdmin}
           onAddInquiry={handleAddInquiry} 
           onUpdateConfig={setConfig} 
         />

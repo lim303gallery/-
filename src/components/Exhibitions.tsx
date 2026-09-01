@@ -10,18 +10,23 @@ import { GalleryConfig, ExhibitionPost } from '../types.ts';
 interface ExhibitionsProps {
   config: GalleryConfig;
   posts: ExhibitionPost[];
+  isUnlocked?: boolean;
+  onUnlockChange?: (unlocked: boolean) => void;
 }
 
 type TabType = 'all' | 'current' | 'upcoming' | 'past' | 'notice';
 
-export default function Exhibitions({ config, posts }: ExhibitionsProps) {
-  const [isUnlocked, setIsUnlocked] = useState<boolean>(() => {
+export default function Exhibitions({ config, posts, isUnlocked: externalUnlocked, onUnlockChange }: ExhibitionsProps) {
+  const [internalUnlocked, setInternalUnlocked] = useState<boolean>(() => {
     try {
       return sessionStorage.getItem('lim303_exhibitions_unlocked') === 'true';
     } catch {
       return false;
     }
   });
+
+  const isUnlocked = externalUnlocked !== undefined ? externalUnlocked : internalUnlocked;
+
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState('');
   const [selectedTab, setSelectedTab] = useState<TabType>('all');
@@ -32,7 +37,8 @@ export default function Exhibitions({ config, posts }: ExhibitionsProps) {
     setAuthError('');
     const targetPassword = config.adminPassword || '0821';
     if (passwordInput.trim() === targetPassword.trim()) {
-      setIsUnlocked(true);
+      setInternalUnlocked(true);
+      if (onUnlockChange) onUnlockChange(true);
       try {
         sessionStorage.setItem('lim303_exhibitions_unlocked', 'true');
       } catch {
@@ -45,7 +51,8 @@ export default function Exhibitions({ config, posts }: ExhibitionsProps) {
   };
 
   const handleLock = () => {
-    setIsUnlocked(false);
+    setInternalUnlocked(false);
+    if (onUnlockChange) onUnlockChange(false);
     try {
       sessionStorage.removeItem('lim303_exhibitions_unlocked');
     } catch {

@@ -21,16 +21,12 @@ export default function About({ config, onUpdateConfig, isAdmin = false }: About
   const [isDragging, setIsDragging] = useState(false);
   const [uploadNotice, setUploadNotice] = useState<string | null>(null);
 
-  // Normalize images array to ensure local gallery photos are always used
-  const rawImages = config.aboutImages && config.aboutImages.length > 0 
-    ? config.aboutImages 
+  // Normalize images array to ensure real photos or user uploaded photos are used
+  const images = (config.aboutImages && Array.isArray(config.aboutImages) && config.aboutImages.length > 0)
+    ? config.aboutImages
     : DEFAULT_GALLERY_IMAGES;
-  
-  // Guard against any leftover unsplash placeholders from old cache
-  const hasUnsplash = rawImages.some(img => typeof img === 'string' && img.includes('unsplash.com'));
-  const images = (!hasUnsplash && rawImages.length > 0) ? rawImages : DEFAULT_GALLERY_IMAGES;
 
-  const currentIdx = Math.min(activeImageIndex, images.length - 1);
+  const currentIdx = Math.min(activeImageIndex, Math.max(0, images.length - 1));
 
   const processImageFiles = (files: FileList | File[], mode: 'add' | 'replace' = 'add') => {
     const validFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
@@ -256,7 +252,7 @@ export default function About({ config, onUpdateConfig, isAdmin = false }: About
           {/* Gallery Multi-Photo Interactive Gallery & Specs (Right Column) */}
           <div className="lg:col-span-6 flex flex-col space-y-4">
             
-            {/* Main Primary Interactive Photo Stage with Drag & Drop (Admin only) */}
+            {/* Main Primary Interactive Photo Stage with Drag & Drop (Admin Only) */}
             <div 
               className={`prestige-frame w-full shadow-md relative ${isAdmin ? 'group' : ''} transition-all bg-neutral-900 rounded-xl overflow-hidden ${
                 isDragging && isAdmin ? 'ring-4 ring-offset-2 ring-zinc-900 scale-[1.01]' : ''
@@ -307,7 +303,7 @@ export default function About({ config, onUpdateConfig, isAdmin = false }: About
                   </>
                 )}
 
-                {/* Hidden File Inputs (Admin only) */}
+                {/* Hidden File Inputs (Admin Only) */}
                 {isAdmin && (
                   <>
                     <input 
@@ -316,6 +312,7 @@ export default function About({ config, onUpdateConfig, isAdmin = false }: About
                       onChange={(e) => {
                         if (e.target.files && e.target.files.length > 0) {
                           processImageFiles(e.target.files, 'add');
+                          e.target.value = '';
                         }
                       }} 
                       accept="image/*" 
@@ -328,6 +325,7 @@ export default function About({ config, onUpdateConfig, isAdmin = false }: About
                       onChange={(e) => {
                         if (e.target.files && e.target.files.length > 0) {
                           processImageFiles(e.target.files, 'replace');
+                          e.target.value = '';
                         }
                       }} 
                       accept="image/*" 
@@ -336,17 +334,17 @@ export default function About({ config, onUpdateConfig, isAdmin = false }: About
                   </>
                 )}
 
-                {/* Hover Management Overlay for Direct Multi-Upload (Admin only) */}
+                {/* Hover Management Overlay for Direct Multi-Upload (Admin Only) */}
                 {isAdmin && onUpdateConfig && (
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 backdrop-blur-[2px] z-20 space-y-2">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex flex-wrap items-center justify-center gap-2">
                       <button
                         type="button"
                         onClick={() => multiFileInputRef.current?.click()}
                         className="px-3.5 py-2 bg-white text-zinc-900 hover:bg-zinc-100 rounded-lg shadow-lg text-xs font-bold flex items-center space-x-1.5 transition-transform hover:scale-105 cursor-pointer"
                       >
                         <Plus size={14} className="text-zinc-700" />
-                        <span>사진 여러 장 추가</span>
+                        <span>사진 추가 (다중 선택)</span>
                       </button>
                       <button
                         type="button"
@@ -354,7 +352,7 @@ export default function About({ config, onUpdateConfig, isAdmin = false }: About
                         className="px-3.5 py-2 bg-zinc-800 text-white hover:bg-zinc-700 rounded-lg shadow-lg text-xs font-bold flex items-center space-x-1.5 transition-transform hover:scale-105 cursor-pointer border border-zinc-700"
                       >
                         <Upload size={14} />
-                        <span>현재 사진 바꾸기</span>
+                        <span>현재 사진 교체</span>
                       </button>
                       {images.length > 1 && (
                         <button
@@ -368,7 +366,7 @@ export default function About({ config, onUpdateConfig, isAdmin = false }: About
                       )}
                     </div>
                     <span className="text-[11px] text-white/85 font-medium pt-1">
-                      여러 장의 사진 파일을 드래그하여 한 번에 등록할 수 있습니다.
+                      [관리자] 사진 파일을 드래그하거나 버튼을 눌러 사진을 수정할 수 있습니다.
                     </span>
                   </div>
                 )}
@@ -383,16 +381,16 @@ export default function About({ config, onUpdateConfig, isAdmin = false }: About
               </div>
             </div>
 
-            {/* Thumbnail Strip & Quick Actions */}
+            {/* Thumbnail Strip */}
             <div className="flex items-center space-x-2 overflow-x-auto py-1 scrollbar-thin">
               {images.map((imgUrl, idx) => (
                 <div
                   key={idx}
                   onClick={() => setActiveImageIndex(idx)}
-                  className={`relative w-16 h-12 rounded-md overflow-hidden shrink-0 cursor-pointer border-2 transition-all ${
+                  className={`group/thumb relative w-16 h-12 rounded-md overflow-hidden shrink-0 cursor-pointer border-2 transition-all ${
                     idx === currentIdx 
                       ? 'border-zinc-900 ring-2 ring-zinc-300 scale-105' 
-                      : 'border-transparent opacity-60 hover:opacity-100'
+                      : 'border-transparent opacity-65 hover:opacity-100'
                   }`}
                 >
                   <img 
@@ -405,7 +403,7 @@ export default function About({ config, onUpdateConfig, isAdmin = false }: About
                     <button
                       type="button"
                       onClick={(e) => handleDeleteImage(idx, e)}
-                      className="absolute top-0.5 right-0.5 w-4 h-4 bg-black/70 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
+                      className="absolute top-0.5 right-0.5 w-4 h-4 bg-black/70 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover/thumb:opacity-100 transition-opacity"
                       title="사진 삭제"
                     >
                       <Trash2 size={9} />
@@ -414,7 +412,7 @@ export default function About({ config, onUpdateConfig, isAdmin = false }: About
                 </div>
               ))}
 
-              {/* Add More Photos thumbnail button (Admin only) */}
+              {/* Add More Photos thumbnail button (Admin Only) */}
               {isAdmin && onUpdateConfig && (
                 <button
                   type="button"
@@ -427,6 +425,52 @@ export default function About({ config, onUpdateConfig, isAdmin = false }: About
                 </button>
               )}
             </div>
+
+            {/* Direct Quick Action Bar for Uploading / Resetting photos (Admin Only) */}
+            {isAdmin && (
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                <div className="flex items-center space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => multiFileInputRef.current?.click()}
+                    className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 shadow-xs transition-colors cursor-pointer"
+                  >
+                    <Upload size={13} />
+                    <span>내부 사진 업로드 / 추가</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => replaceFileInputRef.current?.click()}
+                    className="px-3 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-750 hover:text-zinc-950 rounded-lg text-xs font-semibold flex items-center space-x-1.5 border border-zinc-200 transition-colors cursor-pointer"
+                  >
+                    <ImageIcon size={13} />
+                    <span>현재 사진 교체</span>
+                  </button>
+                </div>
+
+                {onUpdateConfig && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (confirm('기본 갤러리 4장 사진으로 초기화하시겠습니까?')) {
+                        onUpdateConfig({
+                          ...config,
+                          aboutImages: DEFAULT_GALLERY_IMAGES,
+                          aboutImage: DEFAULT_GALLERY_IMAGES[0],
+                          aboutImage2: DEFAULT_GALLERY_IMAGES[1],
+                        });
+                        setActiveImageIndex(0);
+                        setUploadNotice('기본 갤러리 사진으로 복원되었습니다.');
+                        setTimeout(() => setUploadNotice(null), 2500);
+                      }
+                    }}
+                    className="text-[11px] text-zinc-400 hover:text-zinc-600 underline underline-offset-2 transition-colors cursor-pointer"
+                  >
+                    기본 사진으로 복원
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* SPACE SPECIFICATION Card */}
             <div className="p-5 rounded-xl border border-neutral-200/80 font-mono text-xs text-zinc-700 leading-relaxed bg-[#FCFAF7] border-l-4 shadow-xs" style={{ borderLeftColor: config.pointColor }}>

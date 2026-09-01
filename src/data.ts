@@ -8,7 +8,7 @@ import galleryMainHallImg from './assets/images/gallery_main_hall_1788248591245.
 import gallerySideViewImg from './assets/images/gallery_side_view_1788248608964.jpg';
 import galleryWallPerspectiveImg from './assets/images/gallery_wall_perspective_1788248659744.jpg';
 import galleryReceptionImg from './assets/images/gallery_reception_1788248626793.jpg';
-import galleryFloorPlanBlueprintImg from './assets/images/gallery_floorplan_blueprint_1788248676374.jpg';
+import lim303FloorPlanImg from './assets/images/lim303_floor_plan_1788158721862.jpg';
 
 export const DEFAULT_GALLERY_IMAGES = [
   galleryMainHallImg,
@@ -17,7 +17,7 @@ export const DEFAULT_GALLERY_IMAGES = [
   galleryReceptionImg,
 ];
 
-export const DEFAULT_FLOOR_PLAN_IMAGE = galleryFloorPlanBlueprintImg;
+export const DEFAULT_FLOOR_PLAN_IMAGE = lim303FloorPlanImg;
 
 export const INITIAL_CONFIG: GalleryConfig = {
   siteName: 'LIM303 GALLERY',
@@ -32,8 +32,8 @@ export const INITIAL_CONFIG: GalleryConfig = {
   address: '서울특별시 강남구 압구정로32길 32 4층',
   phone: '010-8020-5499',
   email: 'lim303gallery@gmail.com',
-  hoursWeekday: '오전 10:30 - 오후 6:30',
-  hoursWeekend: '오전 11:00 - 오후 7:00',
+  hoursWeekday: '오전 10:00 - 오후 6:00',
+  hoursWeekend: '오전 10:00 - 오후 6:00',
   closedDays: '매주 월요일 휴관',
   
   // Customizer styling (Prussian Blue & Silver)
