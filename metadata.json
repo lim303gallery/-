@@ -1,0 +1,6 @@
+{
+  "name": "LIM303 GALLERY",
+  "description": "LIM303 GALLERY - 프러시안 블루와 실버 톤의 프리미엄 미술품 대관 갤러리 실시간 웹사이트 커스텀 에디터 및 관리 대시보드",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

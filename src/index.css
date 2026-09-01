@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Gowun+Batang:wght@400;700&family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,300..900;1,300..900&display=swap');
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Gowun Batang", "Georgia", "Nanum Myeongjo", serif;
+  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Arial", "Noto Sans KR", sans-serif;
+  --font-inter: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Cormorant Garamond", "Playfair Display", "Times New Roman", serif;
+}
+
+body {
+  background-color: #ffffff;
+  color: #1a1a1a;
+  background-image: 
+    radial-gradient(rgba(212, 195, 163, 0.1) 1px, transparent 0),
+    radial-gradient(rgba(212, 195, 163, 0.1) 1px, transparent 0);
+  background-size: 40px 40px;
+  background-position: 0 0, 20px 20px;
+  letter-spacing: -0.025em;
+}
+
+h1, h2, h3, h4, .font-bold {
+  letter-spacing: -0.035em !important;
+}
+
+/* Base custom font selection wrappers */
+.font-serif-korean {
+  font-family: var(--font-serif);
+}
+
+.font-sans-korean {
+  font-family: var(--font-sans);
+}
+
+/* Luxury Prestige dual borders & frames */
+.prestige-frame {
+  position: relative;
+  border: 1px solid var(--point-color, #003153);
+  padding: 8px;
+  background-color: #ffffff;
+}
+
+.prestige-frame::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border: 1px solid rgba(138, 144, 153, 0.35);
+  pointer-events: none;
+}
+
+/* Subtle thin divider lines */
+.luxury-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--point-color, #003153) 50%, transparent);
+  width: 100%;
+}
+
+/* Card hover luxury effect */
+.luxury-card {
+  background: #ffffff;
+  border: 1px solid rgba(138, 144, 153, 0.25);
+  transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--point-color, #003153);
+  box-shadow: 0 15px 30px -10px rgba(0, 49, 83, 0.15);
+}
+
+/* Form input elements editorial styling */
+.luxury-input {
+  border: none;
+  border-bottom: 1px solid rgba(138, 144, 153, 0.4);
+  background: transparent !important;
+  border-radius: 0px !important;
+  padding-left: 2px !important;
+  padding-right: 2px !important;
+  transition: all 300ms ease;
+}
+
+.luxury-input:focus {
+  border-bottom-color: var(--point-color, #003153);
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Button with clean gold line drawing */
+.btn-prestige {
+  position: relative;
+  background: #003153;
+  color: #ffffff;
+  padding: 12px 28px;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  transition: all 300ms ease;
+  overflow: hidden;
+  border: 1px solid #003153;
+}
+
+.btn-prestige::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px solid rgba(209, 213, 219, 0.4);
+  opacity: 1;
+  pointer-events: none;
+  transition: all 300ms ease;
+}
+
+.btn-prestige:hover {
+  background: #ffffff;
+  color: #003153;
+  border-color: var(--point-color, #003153);
+}
+
+.btn-prestige:hover::after {
+  border-color: var(--point-color, #003153);
+}
+
+/* Transition for everything */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Elegant selection colors */
+::selection {
+  background-color: var(--point-color, #003153);
+  color: #ffffff;
+}
+
+/* Accent helper styles */
+.accent-border-subtle {
+  border-color: color-mix(in srgb, var(--point-color, #003153) 30%, transparent);
+}
+
+.bg-accent-transparent {
+  background-color: color-mix(in srgb, var(--point-color, #003153) 80%, white);
+}
+
+/* Custom premium scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--point-color, #003153);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--point-color, #003153) 80%, black);
+}
+
