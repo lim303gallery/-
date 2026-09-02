@@ -15,14 +15,16 @@ import EventPopup from './components/EventPopup.tsx';
 import { GalleryConfig, ExhibitionPost, RentalInquiry } from './types.ts';
 import { INITIAL_CONFIG, INITIAL_EXHIBITIONS, INITIAL_INQUIRIES, DEFAULT_GALLERY_IMAGES, DEFAULT_FLOOR_PLAN_IMAGE } from './data.ts';
 
-const CONFIG_STORAGE_KEY = 'lim303_gallery_config_v6';
-const POSTS_STORAGE_KEY = 'lim303_gallery_posts_v6';
-const INQUIRIES_STORAGE_KEY = 'lim303_gallery_inquiries_v6';
+const CONFIG_STORAGE_KEY = 'lim303_gallery_config_v8';
+const POSTS_STORAGE_KEY = 'lim303_gallery_posts_v8';
+const INQUIRIES_STORAGE_KEY = 'lim303_gallery_inquiries_v8';
 
 export default function App() {
   const [config, setConfig] = useState<GalleryConfig>(() => {
     // Purge legacy dirty caches
     const oldKeys = [
+      'lim303_gallery_config_v7',
+      'lim303_gallery_config_v6',
       'lim303_gallery_config_v5',
       'lim303_gallery_config_v4',
       'lim303_gallery_config_v3',
