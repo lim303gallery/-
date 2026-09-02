@@ -237,21 +237,6 @@ export default function RentalGuide({ config, onAddInquiry, onUpdateConfig, isAd
                     </div>
                   ))}
                 </div>
-
-                {/* Special Student & Graduation Special Price Highlight Card */}
-                <div className="mt-8 p-4 rounded-xl bg-zinc-50 border border-zinc-200/90 text-left flex items-start space-x-3 shadow-2xs">
-                  <div className="w-5 h-5 rounded-full bg-zinc-900 text-white flex items-center justify-center shrink-0 mt-0.5 text-[11px] font-bold">
-                    ★
-                  </div>
-                  <div>
-                    <h5 className="text-xs font-bold text-zinc-900 tracking-tight mb-0.5">
-                      학생 및 졸업 전시 대관 특별가 혜택
-                    </h5>
-                    <p className="text-zinc-600 text-xs font-light leading-relaxed">
-                      학생 전시 및 미술대학 졸업 전시 대관의 경우 청년 작가 지원을 위한 맞춤형 특별가가 적용됩니다.
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
 

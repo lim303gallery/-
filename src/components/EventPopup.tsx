@@ -113,7 +113,6 @@ export default function EventPopup({ config, isOpen: controlledIsOpen, onClose: 
                 </p>
               </div>
             </div>
-
             <div className="flex items-start space-x-3.5 pt-3 border-t border-slate-200/80">
               <div 
                 className="w-5 h-5 rounded-full text-white flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold shadow-2xs"
@@ -134,11 +133,11 @@ export default function EventPopup({ config, isOpen: controlledIsOpen, onClose: 
           <div className="flex flex-wrap items-center justify-between text-xs text-slate-600 font-sans gap-2 px-1">
             <span className="flex items-center space-x-1.5">
               <Phone size={13} className="text-slate-700" />
-              <strong className="text-slate-900">유선상담:</strong> {config.phone || '010-8020-5499'}
+              <strong className="text-slate-900">유선상담 :</strong> <span>{config.phone || '010-8020-5499'}</span>
             </span>
             <span className="flex items-center space-x-1.5">
               <Mail size={13} className="text-slate-700" />
-              <strong className="text-slate-900">문의:</strong> {config.email || 'lim303gallery@gmail.com'}
+              <strong className="text-slate-900">문의 :</strong> <span>{config.email || 'lim303gallery@gmail.com'}</span>
             </span>
           </div>
 
