@@ -11,10 +11,10 @@ import galleryReceptionImg from './assets/images/gallery_reception_1788248626793
 import lim303FloorPlanImg from './assets/images/lim303_floor_plan_actual.svg';
 
 export const DEFAULT_GALLERY_IMAGES = [
-  galleryMainHallImg,
-  gallerySideViewImg,
-  galleryWallPerspectiveImg,
-  galleryReceptionImg,
+  '/1.jpg',
+  '/2.jpg',
+  '/3.jpg',
+  '/4.jpg',
 ];
 
 export const DEFAULT_FLOOR_PLAN_IMAGE = lim303FloorPlanImg;
@@ -24,8 +24,8 @@ export const INITIAL_CONFIG: GalleryConfig = {
   siteSubName: 'PROJECT & EXHIBITION SPACE',
   siteDescription: '빛과 공간, 그리고 예술이 스며드는 프리미엄 대관 미술관',
   aboutText: 'LIM303 GALLERY는 독창적인 시각을 지닌 현대 미술가과 대중을 연결하는 세련되고 감각적인 복합 예술 공간입니다. 백색의 미니멀한 공간 구성과 정교한 조명 시스템을 통해, 작품 본연의 온전한 호흡을 지탱합니다. 참신한 기획 전시부터 수준 높은 개인전, 브랜드 팝업 및 창의적 대관까지 예술이 살아 숨 쉬는 최상의 환경을 제공합니다.',
-  aboutImage: galleryMainHallImg,
-  aboutImage2: gallerySideViewImg,
+  aboutImage: '/1.jpg',
+  aboutImage2: '/2.jpg',
   aboutImages: DEFAULT_GALLERY_IMAGES,
   
   // Contact details
